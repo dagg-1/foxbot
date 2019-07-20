@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Discord;
 using Discord.WebSocket;
-using Discord.Commands;
 
 namespace foxbot
 {
@@ -13,10 +13,11 @@ namespace foxbot
     hey its like npm install, npm start!
     */ 
 
-    class Program : ModuleBase<SocketCommandContext>
+    class Program
     {
         private DiscordSocketClient _client;
         public Random rnd = new Random();
+        
 
         static void Main(string[] args)
         {
@@ -71,11 +72,20 @@ namespace foxbot
                     "Wow! A fox!"};
                     #endregion
 
-                    foxembed.WithAuthor("FoxBot", "https://cdn.discordapp.com/avatars/601967284394917900/f25955e890f89f1015762647f82ea555.webp")
-                    .WithImageUrl("https://dagg.xyz/randomfox/images/" + rnd.Next(0, 125) + ".jpg")
-                    .WithDescription(catchphrase[rnd.Next(catchphrase.Length)])
-                    .WithColor(rnd.Next(0,255), rnd.Next(0,255), rnd.Next(0,255));
-                    await message.Channel.SendMessageAsync("", false, foxembed.Build());
+                    var sent = await message.Channel.SendMessageAsync("Getting your foxes...");
+
+                    var start = DateTime.UtcNow;
+
+                    while(DateTime.UtcNow - start < TimeSpan.FromSeconds(30))
+                    {
+                        Thread.Sleep(5000);
+                        foxembed.WithAuthor(message.Author)
+                        .WithImageUrl("https://dagg.xyz/randomfox/images/" + rnd.Next(0, 125) + ".jpg")
+                        .WithDescription(catchphrase[rnd.Next(catchphrase.Length)])
+                        .WithColor(rnd.Next(0,255), rnd.Next(0,255), rnd.Next(0,255));
+                        await sent.DeleteAsync();
+                        sent = await message.Channel.SendMessageAsync("", false, foxembed.Build());
+                    }
                     break;
                 #endregion
             }
