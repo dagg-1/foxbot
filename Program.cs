@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Discord;
 using Discord.WebSocket;
-
 namespace foxbot
 {
     /* 
@@ -20,9 +18,7 @@ namespace foxbot
         
 
         static void Main(string[] args)
-        {
-            new Program().MainAsync().GetAwaiter().GetResult();
-        }
+        => new Program().MainAsync().GetAwaiter().GetResult();
 
         public async Task MainAsync()
         {
@@ -58,6 +54,7 @@ namespace foxbot
                 #region !fox
                 case "!fox":
                     var foxembed = new EmbedBuilder();
+                    Emoji nextreact = new Emoji("➡");
 
                     #region Catchphrases
                     string[] catchphrase = {"A fox appears!", 
@@ -71,21 +68,12 @@ namespace foxbot
                     "You see a fox!",
                     "Wow! A fox!"};
                     #endregion
-
-                    var sent = await message.Channel.SendMessageAsync("Getting your foxes...");
-
-                    var start = DateTime.UtcNow;
-
-                    while(DateTime.UtcNow - start < TimeSpan.FromSeconds(30))
-                    {
-                        Thread.Sleep(5000);
-                        foxembed.WithAuthor(message.Author)
-                        .WithImageUrl("https://dagg.xyz/randomfox/images/" + rnd.Next(0, 125) + ".jpg")
-                        .WithDescription(catchphrase[rnd.Next(catchphrase.Length)])
-                        .WithColor(rnd.Next(0,255), rnd.Next(0,255), rnd.Next(0,255));
-                        await sent.DeleteAsync();
-                        sent = await message.Channel.SendMessageAsync("", false, foxembed.Build());
-                    }
+            
+                    foxembed.WithAuthor(message.Author)
+                    .WithImageUrl("https://dagg.xyz/randomfox/images/" + rnd.Next(0, 125) + ".jpg")
+                    .WithDescription(catchphrase[rnd.Next(catchphrase.Length)])
+                    .WithColor(rnd.Next(0,255), rnd.Next(0,255), rnd.Next(0,255));
+                    var sent = await message.Channel.SendMessageAsync("", false, foxembed.Build());
                     break;
                 #endregion
             }
