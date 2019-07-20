@@ -2,6 +2,12 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Discord.Commands;
+using System.Reflection;
+
+/*
+    ********************Bot is currently non-functional********************
+*/
 
 namespace foxbot
 {
@@ -19,16 +25,16 @@ namespace foxbot
             new Program().MainAsync().GetAwaiter().GetResult();
         }
 
-        private DiscordSocketClient _client;
+        private DiscordSocketClient _mainclient;
         public async Task MainAsync()
         {
-            _client = new DiscordSocketClient();
-            _client.Log += Log;
+            _mainclient = new DiscordSocketClient();
+            _mainclient.Log += Log;
 
             var token = "EDITME";
 
-            await _client.LoginAsync(TokenType.Bot, token);
-            await _client.StartAsync();
+            await _mainclient.LoginAsync(TokenType.Bot, token);
+            await _mainclient.StartAsync();
 
             await Task.Delay(-1);
         }
